@@ -1,39 +1,27 @@
 const date = [
     {
         name: 'Ваня Иванов',
-        day: 22,
-        month: 7,
-        year: 2003
+        date: '22.07.2003'
     },
     {
-        name: 'User1',
-        day: 28,
-        month: 7,
-        year: 2003
+        name: 'Женя Сокол',
+        date: '28.07.2003'
     },
     {
         name: 'Саша Прокопенко',
-        day: 14,
-        month: 1,
-        year: 2001
+        date: '14.01.2001'
     },
     {
         name: 'Аня Дубцова',
-        day: 12,
-        month: 9,
-        year: 2004
+        date: '12.09.2004'
     },
     {
-        name: 'User2',
-        day: 12,
-        month: 9,
-        year: 2002
+        name: 'Коля Зайценко',
+        date: '12.09.2002'
     },
     {
         name: 'Влад Волков',
-        day: 9,
-        month: 11,
-        year: 1999
+        date: '09.11.1999'
     }
 ];
 
@@ -53,42 +41,58 @@ function AgeStr(age) {
     }
 }
 
+function dayToNumber(date){
+    let formatDate = date.split('.').reverse().join('-')
+    return new Date(formatDate).getDate();
+}
+
+function monthToNumber(date){
+    let formatDate = date.split('.').reverse().join('-')
+    return new Date(formatDate).getMonth() + 1;
+}
+
+function yearToNumber(date) {
+    let formatDate = date.split('.').reverse().join('-')
+    return new Date(formatDate).getFullYear();
+}
+
 function EmployeeBirthdays(date, amount) {
-    const monthNow = 5;
-    const yearNow = 2022;
+    const monthNow = new Date(new Date().toDateString()).getMonth() + 1;
+    const yearNow = new Date(new Date().toDateString()).getFullYear();
     const monthsStr = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
     date.sort(function (a, b) {
-        if (a.month > b.month) {
+        if (monthToNumber(a.date) > monthToNumber(b.date)) {
             return 1;
         }
-        if (a.month < b.month) {
+        if (monthToNumber(a.date) < monthToNumber(b.date)) {
             return -1;
         }
-        if (a.day > b.day) {
+        if (dayToNumber(a.date) > dayToNumber(b.date)) {
             return 1;
         }
-        if (a.day < b.day) {
+        if (dayToNumber(a.date) < dayToNumber(b.date)) {
             return -1;
         }
-        if (a.year > b.year) {
+        if (yearToNumber(a.date) > yearToNumber(b.date)) {
             return 1;
         }
-        if (a.year < b.year) {
+        if (yearToNumber(a.date) < yearToNumber(b.date)) {
             return -1;
         }
         return 0;
     });
+
     for (let i = 0; i <= amount; i++) {
         let flag = false;
         let month = (monthNow + i - 1) % 12;
         console.log(`${monthsStr[month]} ${yearNow + (Math.floor(i / 12))}:`);
         date.map(el => {
-            if (el.month === (month % 12) + 1) {
-                let age = yearNow - el.year + (Math.floor(i / 12));
-                console.log(` (${el.day}) - ${el.name} (${age} ${AgeStr(age)})`);
+            if (monthToNumber(el.date) === (month % 12) + 1) {
+                let age = yearNow - yearToNumber(el.date) + (Math.floor(i / 12));
+                console.log(` (${dayToNumber(el.date)}) - ${el.name} (${age} ${AgeStr(age)})`);
                 flag = true;
-            }            
+            }
         });
         if (!flag) {
             console.log(' Пусто...')
