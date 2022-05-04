@@ -35,7 +35,7 @@ const date = [
         month: 11,
         year: 1999
     }
-]; 
+];
 
 function AgeStr(age) {
     count = age % 100;
