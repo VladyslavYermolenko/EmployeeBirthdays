@@ -41,23 +41,17 @@ function AgeStr(age) {
     }
 }
 
-function dayToNumber(date){
-    if (date === undefined)
-        return undefined;
+function dayToNumber(date) {
     let formatDate = date.split('.').reverse().join('-')
     return new Date(formatDate).getDate();
 }
 
-function monthToNumber(date){
-    if (date === undefined)
-        return undefined;
+function monthToNumber(date) {
     let formatDate = date.split('.').reverse().join('-')
     return new Date(formatDate).getMonth() + 1;
 }
 
 function yearToNumber(date) {
-    if (date === undefined)
-        return undefined;
     let formatDate = date.split('.').reverse().join('-')
     return new Date(formatDate).getFullYear();
 }
@@ -67,49 +61,41 @@ function EmployeeBirthdays(data, amount) {
     const yearNow = new Date(new Date().toDateString()).getFullYear();
     const monthsStr = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
-    const dataMap = data.reduce((prevV, currV) => {
-        console.log(`| ${monthToNumber(prevV['date'])} - ${monthToNumber(currV['date'])} |`);
-        prevV.get(monthToNumber(prevV['date']))?.push(currV) ??
-        prevV.set(monthToNumber(currV['date']), [currV]);
-    }, new Map());
-    console.log(dataMap);
-    // data.sort(function (a, b) {
-    //     if (monthToNumber(a.date) > monthToNumber(b.date)) {
-    //         return 1;
-    //     }
-    //     if (monthToNumber(a.date) < monthToNumber(b.date)) {
-    //         return -1;
-    //     }
-    //     if (dayToNumber(a.date) > dayToNumber(b.date)) {
-    //         return 1;
-    //     }
-    //     if (dayToNumber(a.date) < dayToNumber(b.date)) {
-    //         return -1;
-    //     }
-    //     if (yearToNumber(a.date) > yearToNumber(b.date)) {
-    //         return 1;
-    //     }
-    //     if (yearToNumber(a.date) < yearToNumber(b.date)) {
-    //         return -1;
-    //     }
-    //     return 0;
-    // });
+    data.sort(function (a, b) {
+        if (dayToNumber(a.date) > dayToNumber(b.date)) {
+            return 1;
+        }
+        if (dayToNumber(a.date) < dayToNumber(b.date)) {
+            return -1;
+        }
+        if (yearToNumber(a.date) > yearToNumber(b.date)) {
+            return 1;
+        }
+        if (yearToNumber(a.date) < yearToNumber(b.date)) {
+            return -1;
+        }
+        return 0;
+    });
 
-    // for (let i = 0; i <= amount; i++) {
-    //     let flag = false;
-    //     let month = (monthNow + i - 1) % 12;
-    //     console.log(`${monthsStr[month]} ${yearNow + (Math.floor(i / 12))}:`);
-    //     let dataMap = data.map(el => {
-    //         if (monthToNumber(el.date) === (month % 12) + 1) {
-    //             let age = yearNow - yearToNumber(el.date) + (Math.floor(i / 12));
-    //             console.log(` (${dayToNumber(el.date)}) - ${el.name} (${age} ${AgeStr(age)})`);
-    //             flag = true;
-    //         }
-    //     });
-    //     if (!flag) {
-    //         console.log(' Пусто...')
-    //     }
-    // }
+    const dataMap = new Map();
+    for (const obj of data) {
+        const month = monthToNumber(obj.date);
+        dataMap.get(month)?.push(obj) ?? dataMap.set(month, [obj]);
+    }
+
+    for (let i = 0; i <= amount; i++) {
+        let month = (monthNow + i - 1) % 12;
+        console.log(`${monthsStr[month]} ${yearNow + (Math.floor(i / 12))}:`);
+        const arr = dataMap.get(month);
+        if (!arr) {
+            console.log(' Пусто...');
+            continue;
+        }
+        for (const el of arr) {
+            let age = yearNow - yearToNumber(el.date) + (Math.floor(i / 12));
+            console.log(` (${dayToNumber(el.date)}) - ${el.name} (${age} ${AgeStr(age)})`);
+        }
+    }
 }
 
 EmployeeBirthdays(data, 23); // 1 - 12 месяц
