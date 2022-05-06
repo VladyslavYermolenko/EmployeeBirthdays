@@ -25,17 +25,17 @@ const data = [
     }
 ];
 
-function AgeStr(count) { // plural
+function plural(count, one, few, many) {
     let form = '';
     const x = count % 10;
     if (x === 0 || (count >= 10 && count <= 20)) {
-        form = 'лет';
+        form = many;
     } else if (x === 1) {
-        form = 'год';
+        form = one;
     } else if (x < 5 && count ) {
-        form = 'года';
+        form = few;
     } else {
-        form = 'лет';
+        form = many;
     }
     return count + ' ' + form;
 }
@@ -98,7 +98,7 @@ function EmployeeBirthdays(data, amount) {
         }
         for (const el of arr) {
             let age = yearNow - yearToNumber(el.date) + (Math.floor(i / 12));
-            console.log(` (${dayToNumber(el.date)}) - ${el.name} (${AgeStr(age)})`);
+            console.log(` (${dayToNumber(el.date)}) - ${el.name} (${plural(age, 'лет', 'год', 'года')})`);
         }
     }
     // console.log(dataMap);
